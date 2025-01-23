@@ -70,6 +70,12 @@
             <artifactId>hibernate-validator</artifactId>
             <version>8.0.1.Final</version>
         </dependency>
+        <dependency>
+            <groupId>com.itextpdf</groupId>
+            <artifactId>itextpdf</artifactId>
+            <version>5.5.13.2</version>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -100,5 +106,17 @@
             </plugin>
         </plugins>
     </build>
+    <repositories>
+        <repository>
+            <id>central</id>
+            <url>https://repo.maven.apache.org/maven2</url>
+        </repository>
+        <repository>
+            <id>itext-repo</id>
+            <url>https://repo.itextpdf.com/maven2</url>
+        </repository>
+    </repositories>
+
+
 
 </project>

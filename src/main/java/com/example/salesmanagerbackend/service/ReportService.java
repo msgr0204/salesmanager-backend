@@ -1,12 +1,15 @@
 package com.example.salesmanagerbackend.service;
 
-import com.example.salesmanagerbackend.model.Sale;
+import com.example.salesmanagerbackend.model.Report;
 import com.example.salesmanagerbackend.repository.SaleRepository;
 import com.example.salesmanagerbackend.repository.SaleProductRepository;
+import com.itextpdf.text.*;
+import com.itextpdf.text.pdf.PdfWriter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -19,21 +22,15 @@ public class ReportService {
     @Autowired
     private SaleProductRepository saleProductRepository;
 
-    // Obtener el número de transacciones y los datos necesarios
     public Report getDailyReport(String date) {
-        // Número de transacciones realizadas
-        Long transactionCount = saleRepository.getSalesByDate(date).size();
-
-        // Lista de productos vendidos
+        int transactionCount = saleRepository.getSalesByDate(date).size();
         List<Object[]> productQuantities = saleRepository.getTotalQuantityByProduct(date);
-
-        // Total de ingresos
         Double totalRevenue = saleRepository.getTotalRevenueByDate(date);
 
         return new Report(transactionCount, productQuantities, totalRevenue);
     }
 
-    // Exportar el reporte a CSV
+
     public void exportReportToCSV(Report report, String date) throws IOException {
         String fileName = "sales_report_" + date + ".csv";
         FileWriter fileWriter = new FileWriter(fileName);
@@ -48,5 +45,34 @@ public class ReportService {
         fileWriter.append("Total Revenue, " + report.getTotalRevenue() + "\n");
         fileWriter.flush();
         fileWriter.close();
+    }
+
+    public void exportReportToPDF(Report report, String date) throws DocumentException, IOException {
+        String fileName = "sales_report_" + date + ".pdf";
+        Document document = new Document();
+        PdfWriter.getInstance(document, new FileOutputStream(fileName));
+
+        document.open();
+
+
+        document.add(new Paragraph("Reporte de Ventas Diario"));
+        document.add(new Paragraph("Fecha: " + date));
+        document.add(Chunk.NEWLINE);
+
+
+        document.add(new Paragraph("Número de transacciones realizadas: " + report.getTransactionCount()));
+        document.add(Chunk.NEWLINE);
+
+
+        document.add(new Paragraph("Productos vendidos:"));
+        for (Object[] product : report.getProductQuantities()) {
+            document.add(new Paragraph("Producto: " + product[0].toString() +
+                    " | Cantidad: " + product[1].toString()));
+        }
+        document.add(Chunk.NEWLINE);
+
+
+        document.add(new Paragraph("Total general de ingresos: " + report.getTotalRevenue()));
+        document.close();
     }
 }
