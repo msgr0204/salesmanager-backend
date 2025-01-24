@@ -43,11 +43,17 @@ Este servicio se conecta a una base de datos PostgreSQL para almacenar los datos
    ```
 
 2. Configura las credenciales de la base de datos en `application.properties`:
-   ```properties
-   spring.datasource.url=jdbc:postgresql://localhost:5432/salesmanager
-   spring.datasource.username=tu_usuario
-   spring.datasource.password=tu_password
-   spring.jpa.hibernate.ddl-auto=update
+  ```properties
+spring.application.name=salesmanager-backend
+spring.datasource.url=jdbc:postgresql://localhost:5432/sales_manager
+spring.datasource.username=<tu_usuario_postgres>
+spring.datasource.password=<tu_contraseña_postgres>
+spring.jpa.hibernate.ddl-auto=update
+spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
+spring.datasource.driver-class-name=org.postgresql.Driver
+spring.jpa.show-sql=true
+server.port=8081
+
    ```
 
 3. Compila y ejecuta el proyecto:
