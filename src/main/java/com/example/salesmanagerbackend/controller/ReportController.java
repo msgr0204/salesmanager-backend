@@ -11,6 +11,7 @@ import java.io.IOException;
 import com.itextpdf.text.DocumentException;
 
 @RestController
+@CrossOrigin(origins = "http://localhost:5175")
 @RequestMapping("/api/reports")
 public class ReportController {
 
@@ -34,7 +35,7 @@ public class ReportController {
             return new ResponseEntity<>("Error exporting report", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @GetMapping("/daily/{date}/export/pdf")
     public ResponseEntity<String> exportReportToPDF(@PathVariable String date) {
         try {
             Report report = reportService.getDailyReport(date);

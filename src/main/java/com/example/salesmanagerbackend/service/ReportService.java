@@ -9,9 +9,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.FileWriter;
+import java.io.File;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.List;
+
 
 @Service
 public class ReportService {
@@ -32,7 +37,15 @@ public class ReportService {
 
 
     public void exportReportToCSV(Report report, String date) throws IOException {
-        String fileName = "sales_report_" + date + ".csv";
+        String reportsFolder = "reports";
+
+        Path folderPath = Paths.get(reportsFolder);
+        if (!Files.exists(folderPath)) {
+            Files.createDirectories(folderPath);
+        }
+
+        String fileName = reportsFolder + File.separator + "sales_report_" + date + ".csv";
+
         FileWriter fileWriter = new FileWriter(fileName);
 
         fileWriter.append("Transaction Count, " + report.getTransactionCount() + "\n");
@@ -48,7 +61,15 @@ public class ReportService {
     }
 
     public void exportReportToPDF(Report report, String date) throws DocumentException, IOException {
-        String fileName = "sales_report_" + date + ".pdf";
+        String reportsFolder = "reports";
+
+        Path folderPath = Paths.get(reportsFolder);
+        if (!Files.exists(folderPath)) {
+            Files.createDirectories(folderPath);
+        }
+
+        String fileName = reportsFolder + File.separator + "sales_report_" + date + ".pdf";
+
         Document document = new Document();
         PdfWriter.getInstance(document, new FileOutputStream(fileName));
 

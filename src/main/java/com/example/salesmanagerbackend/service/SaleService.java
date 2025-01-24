@@ -25,12 +25,18 @@ public class SaleService {
     @Autowired
     private SaleProductRepository saleProductRepository;
 
+    @Autowired
+    private StockService stockService;  // Inyectamos StockService para validar el stock
+
     public Sale createSaleWithProducts(SaleRequest saleRequest) {
-        // Crear la venta
+
+        stockService.validateStock(saleRequest.getProducts());
+
+
         Sale sale = new Sale();
         sale.setSaleDate(saleRequest.getSaleDate());
 
-        // Calcular el total basado en los productos y sus cantidades
+
         double total = 0.0;
         for (SaleRequest.ProductRequest productRequest : saleRequest.getProducts()) {
             Product product = productRepository.findById(productRequest.getProductId())
@@ -42,7 +48,7 @@ public class SaleService {
         sale.setTotal(total);
         Sale savedSale = saleRepository.save(sale);
 
-        // Asociar productos y cantidades
+
         for (SaleRequest.ProductRequest productRequest : saleRequest.getProducts()) {
             Product product = productRepository.findById(productRequest.getProductId())
                     .orElseThrow(() -> new IllegalArgumentException("Invalid product ID"));
@@ -58,11 +64,9 @@ public class SaleService {
         return saleRepository.findAll();
     }
 
-
     public Optional<Sale> getSaleById(Long id) {
         return saleRepository.findById(id);
     }
-
 
     public Sale updateSale(Sale sale) {
         if (saleRepository.existsById(sale.getId())) {
@@ -70,7 +74,6 @@ public class SaleService {
         }
         throw new IllegalArgumentException("Sale not found with id: " + sale.getId());
     }
-
 
     public void deleteSale(Long id) {
         if (saleRepository.existsById(id)) {
@@ -80,4 +83,3 @@ public class SaleService {
         }
     }
 }
-
